@@ -95,6 +95,8 @@ export default {
       if(this.$v.$error) {
         return;
       }
+      localStorage.setItem('token', '12345')
+       this.$router.push({ path: "/" })
     },
 
     register() {},
