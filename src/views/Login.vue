@@ -15,7 +15,6 @@
                 placeholder="joaosilva@email.com"
                 autocomplete="off"
                 v-model.trim="$v.form.email.$model"
-                :state="getValidation('email')"
               ></b-form-input>
             </b-form-group>
 
@@ -63,7 +62,9 @@
 </template>
 
 <script>
-import { required, minLength, email } from "vuelidate/lib/validators";
+
+import { required, minLength } from "vuelidate/lib/validators";
+import {authToken} from '../service/AuthService'
 
 export default {
   data() {
@@ -78,8 +79,7 @@ export default {
   validations: {
     form: {
       email: {
-        required,
-        email
+        required
       },
 
       password: {
@@ -95,8 +95,18 @@ export default {
       if(this.$v.$error) {
         return;
       }
-      localStorage.setItem('token', '12345')
+        let payload={
+                    username: this.form.email,
+                    password: this.form.password 
+                    };
+
+      authToken(payload).then(Response =>{
+       localStorage.setItem('token', Response.token)
        this.$router.push({ path: "/" })
+      }).catch(erro =>{
+          console.log('Erro ao chamar API de token');
+         console.log(erro);
+      })
     },
 
     register() {},
@@ -110,6 +120,7 @@ export default {
     }
   }
 }
+
 </script>
 
 <style>

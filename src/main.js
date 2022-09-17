@@ -11,10 +11,13 @@ Vue.use(BootstrapVue);
 import Vuelidate from "vuelidate";
 Vue.use(Vuelidate);
 
-//importação do axios e configuração do vue-api-query com o axios
 import axios from "axios";
 import { Model } from "vue-api-query";
+
+axios.defaults.baseURL = process.env.VUE_APP_BASE_AUTH;
+
 Model.$http = axios;
+
 
 Vue.config.productionTip = false;
 
