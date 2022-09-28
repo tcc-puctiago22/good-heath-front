@@ -109,7 +109,10 @@ export default {
       })
     },
 
-    register() {},
+    register() {
+      this.$router.push({ path: "/loginRegister" })
+
+    },
 
     getValidation(field) {
       if(this.$v.form.$dirty === false) {
