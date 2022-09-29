@@ -1,6 +1,7 @@
 <template>
+  
     <div class="container mt-2">
-      <b-form>
+      <b-form class="mb-2">
     
         <b-form-group
           label="CPF"
@@ -38,8 +39,18 @@
           <b-form-invalid-feedback id="customerGivenName-feedback">Campo obrigatório.</b-form-invalid-feedback>
         </b-form-group>
   
-
-
+        <b-form-group
+          label="Data de Nascimento"
+          label-for="dateOverdue"
+        >
+          <b-form-datepicker
+            id="dateOverdue"
+            v-model="form.dateOverdue"
+            label-no-date-selected="Selecione uma data"
+            :min="getToday()"
+          ></b-form-datepicker>
+        </b-form-group>
+        
         <b-form-group
           label="E-mail"
           label-for="email"
@@ -51,9 +62,125 @@
             placeholder="joao@gmail.com"
             required
             autocomplete="off"
+            aria-describedby="customerEmailEmail-feedback"
+
+          ></b-form-input>
+          <b-form-invalid-feedback id="customerEmailEmail-feedback">Campo obrigatório.</b-form-invalid-feedback>
+
+        </b-form-group>
+
+        <b-form-group
+          label="DDD"
+          label-for="ddd"
+        >
+          <b-form-input
+            id="ddd"
+            v-model="form.customerPhonesDdd.$model"
+            type="text"
+            placeholder="21"
+            required
+            autocomplete="off"
           ></b-form-input>
         </b-form-group>
-  
+
+        <b-form-group
+          label="CEP"
+          label-for="customerAddressesPostcode"
+        >
+          <b-form-input
+            id="customerAddressesPostcode"
+            v-model="form.customerAddressesPostcode.$model"
+            type="text"
+            placeholder="06890-320"
+            required
+            autocomplete="off"
+          ></b-form-input>
+        </b-form-group>
+
+        <b-form-group
+          label="Logradouro"
+          label-for="customerAddressesStreetName"
+        >
+          <b-form-input
+            id="customerAddressesStreetName"
+            v-model="form.customerAddressesStreetName.$model"
+            type="text"
+            placeholder="Avenida Brasil"
+            required
+            autocomplete="off"
+          ></b-form-input>
+        </b-form-group>
+
+        <b-form-group
+          label="Número da rua"
+          label-for="customerAddressesStreetNumber"
+        >
+          <b-form-input
+            id="customerAddressesStreetNumber"
+            v-model="form.customerAddressesStreetNumber.$model"
+            type="number"
+            placeholder="10"
+            required
+            autocomplete="off"
+          ></b-form-input>
+        </b-form-group>
+
+        <b-form-group
+          label="Complemento"
+          label-for="customerAddressesComplement"
+        >
+          <b-form-input
+            id="customerAddressesComplement"
+            v-model="form.customerAddressesComplement.$model"
+            type="text"
+            placeholder="casa 5"
+            required
+            autocomplete="off"
+          ></b-form-input>
+        </b-form-group>
+
+        <b-form-group
+          label="Bairro"
+          label-for="customerAddressesDistrict"
+        >
+          <b-form-input
+            id="customerAddressesDistrict"
+            v-model="form.customerAddressesDistrict.$model"
+            type="text"
+            placeholder="centro"
+            autocomplete="off"
+          ></b-form-input>
+        </b-form-group>
+
+        <b-form-group
+          label="UF"
+          label-for="customerAddressesUf"
+        >
+          <b-form-input
+            id="customerAddressesUf"
+            v-model="form.customerAddressesUf.$model"
+            type="text"
+            placeholder="RJ"
+            required
+            autocomplete="off"
+          ></b-form-input>
+        </b-form-group>
+
+        <b-form-group
+          label="Cidade"
+          label-for="customerAddressesCity"
+        >
+          <b-form-input
+            id="customerAddressesCity"
+            v-model="form.customerAddressesCity.$model"
+            type="text"
+            placeholder="Rio de janeiro"
+            required
+            autocomplete="off"
+          ></b-form-input>
+        </b-form-group>
+
+
         <b-form-group
           label="Status"
           label-for="status"
@@ -65,17 +192,6 @@
           ></b-form-select>
         </b-form-group>
   
-        <b-form-group
-          label="Data de vencimento"
-          label-for="dateOverdue"
-        >
-          <b-form-datepicker
-            id="dateOverdue"
-            v-model="form.dateOverdue"
-            label-no-date-selected="Selecione uma data"
-            :min="getToday()"
-          ></b-form-datepicker>
-        </b-form-group>
   
         <b-button 
           type="submit" 
@@ -84,6 +200,7 @@
         > <i class="fas fa-save"></i> Salvar </b-button>
       </b-form>
     </div>
+
   </template>
   
   <script>

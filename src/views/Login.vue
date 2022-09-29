@@ -65,6 +65,8 @@
 
 import { required, minLength } from "vuelidate/lib/validators";
 import {authToken} from '../service/AuthService'
+import {getAssocieateByAccountUuid} from '../service/CustomerService'
+import {getUsernameByToken} from '../helper/helper'
 
 export default {
   data() {
@@ -101,8 +103,27 @@ export default {
                     };
 
       authToken(payload).then(Response =>{
+
        localStorage.setItem('token', Response.token)
-       this.$router.push({ path: "/" })
+       var descode = getUsernameByToken(Response.token)
+          
+          getAssocieateByAccountUuid(descode).then(Response =>{
+
+            if(Response.data.length==0){
+              this.$router.push({ path: "/associeateRegister" })
+
+            }else{
+           this.$router.push({ path: "/" })
+
+            }
+
+          }).catch(erro =>{
+              console.log('Erro ao chamar API de token');
+             console.log(erro);
+          })
+        
+
+
       }).catch(erro =>{
           console.log('Erro ao chamar API de token');
          console.log(erro);

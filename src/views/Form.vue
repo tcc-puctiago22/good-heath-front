@@ -142,6 +142,9 @@ export default {
 
       return !this.$v.form.subject.$error;
     }
+  },
+  beforeCreate(){
+    console.log('beforeCreate')
   }
 }
 </script>

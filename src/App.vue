@@ -9,6 +9,8 @@
         <b-navbar-nav>
           <b-nav-item to="/">Tarefas</b-nav-item>
           <b-nav-item to="/form">Formulário</b-nav-item>
+          <b-nav-item to="/login"  @click="logout" >Logout</b-nav-item>
+
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -30,6 +32,12 @@ export default {
 
   computed: {
     notIsLoginPage() {
+      return this.$route.name !== "login";
+    }
+  },
+  methods: {
+    logout() {
+      localStorage.setItem('token', null)
       return this.$route.name !== "login";
     }
   }

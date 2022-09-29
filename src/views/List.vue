@@ -129,6 +129,7 @@
 </template>
 
 <script>
+
 import TasksModel from "@/models/TasksModel";
 import Status from "@/valueObjects/status"
 import ToastMixin from "@/mixins/toastMixin.js";
@@ -265,7 +266,8 @@ export default {
       }
 
       return 'light';
-    }
+    },
+
   },
 
   computed: {
@@ -273,6 +275,11 @@ export default {
       return this.tasks.length === 0;
     },
   },
+
+  beforeCreate(){
+   
+   
+    }
 };
 </script>
 
