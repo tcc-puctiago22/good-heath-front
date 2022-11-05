@@ -1,18 +1,70 @@
 <template>
   <div class="col">
              <form class="row g-3">
-                <div class="col-md-3">
-                    <label for="inputCPF" class="form-label">CPF</label>
-                    <input type="number" class="form-control" id="inputCPF"  v-model="form.customerDocument" >
+              <div class="col-12">
+                     <hr class="style1"> 
+                 </div>
+                <div class="col-md-6">
+                    <label for="inputCPF" class="form-label">Beneficiario CPF: {{customerDocument}} </label>
                 </div>
                 <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Nome completo</label>
-                    <input type="text" class="form-control" id="inputPassword4"  v-model="form.customerGivenName" > 
+                    <label for="inputPassword4" class="form-label">Nome completo:  {{customerGivenName}}</label>
+                </div>
+                <div class="col-12">
+                <br> 
+                    <hr class="style1"> 
+                     <br>
                 </div>
 
+              <div class="col-md-3">
+                    <label for="inputPhoneDDD" class="form-label">Escolha tipo de Especialidade</label>
+                    <b-form-select
+                        id="typeOccupational"
+                        v-model="typeOccupational"
+                        :options="optionsList"
+                        @change="getSelectedTypeOccupational" 
+                    ></b-form-select>
+               </div>
+
+                 <div class="col-md-3">
+                    <label for="inputPhoneDDD" class="form-label">Escolha o Especialidade</label>
+ 
+                    <b-form-select v-model="occupational">
+                        <option v-for="option in occupationalList" v-bind:key="option.uuid">
+                                {{ option.description }}
+                        </option>
+                    </b-form-select>
+ 
+               </div>
+
                 <div class="col-md-3">
-                    <label for="inputbirthDate" class="form-label">Data de Nascimento</label>
-                    <b-form-datepicker  id="inputbirthDate"   v-model="form.birthDate" label-no-date-selected="Selecione uma data"
+                    <label for="inputuf" class="form-label">Escolha o Estado</label>
+                    <b-form-select   v-model="ufSelect"    @change="callAPICitys"  >
+                    
+                     <option
+                        v-for="(option, idx) in ufList"
+                        :key="idx"
+                        :value="option.sigla"
+                        :title="option.nome || null"
+                    >
+                        {{ option.nome }}
+                    </option>
+                   </b-form-select>
+               </div>
+
+              <div class="col-md-3">
+                    <label for="inputCity" class="form-label">Escolha o Municipio</label>
+                    <b-form-select   v-model="citySelect"   >
+                       <option v-for="option in cityList" v-bind:key="option.nome">
+                                {{ option.nome }}
+                        </option>
+                   </b-form-select>
+               </div>
+
+
+                <div class="col-md-3">
+                    <label for="inputbirthDate" class="form-label">Data da Consulta</label>
+                    <b-form-datepicker  id="inputbirthDate"   v-model="form.scheduledDate" label-no-date-selected="Selecione uma data"
                     ></b-form-datepicker>
                 </div>
                <div class="col-md-2">
@@ -87,10 +139,11 @@ import ToastMixin from "@/mixins/toastMixin.js";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 import TasksModel from "@/models/TasksModel";
 import Status from "@/valueObjects/status"
-import { getUsernameByToken, getEmailByToken } from '../helper/helper'
+import { createAssocieate, getOccupationalList } from '../service/CustomerService'
+import { getlistMunicipios } from '../service/BrasilAPIService'
 
-import { createAssocieate } from '../service/CustomerService'
-import { getVIACEP } from '../service/CEPService'
+
+import {listUFs} from '../helper/UFs'
 
 export default {
     name: "Form",
@@ -99,14 +152,26 @@ export default {
 
     data() {
         return {
+              optionsList: [
+                    { value: 1, text: "Médico" },
+                    { value: 2, text: "Dentista" }   
+                ],
+            occupationalList:[],
+            customerDocument: "",
+            customerGivenName: "",
+            typeOccupational:{},
+            occupational:{},
+            ufList:[],
+            ufSelect:'',
+            cityList:[],
+            citySelect: '',
             form: { 
                 subject: "",
                 description: "",
                 status: Status.OPEN,
 
                 accountUuid: "",
-                customerDocument: "",
-                customerGivenName: "",
+                customerUuid:"",
                 birthDate: "",
 
                 email: "",
@@ -125,22 +190,17 @@ export default {
                 addressesCity: "",
 
             },
-            methodSave: "new",
-            optionsList: [
-                { value: Status.OPEN, text: "Aberto" },
-                { value: Status.FINISHED, text: "Concluído" },
-                { value: Status.ARCHIVED, text: "Arquivado" }
-            ]
+            methodSave: "new"
         }
     },
     mounted() {
-        var token = localStorage.getItem('token')
-        var descode = getUsernameByToken(token)
-        var emailToken = getEmailByToken(token)
 
-        this.form.email= emailToken
-        this.form.customerDocument = descode
-        console.log('a é: ' + this.form.customerDocument)
+        var userdata = JSON.parse(localStorage.getItem('userdata'))
+        this.customerDocument=userdata.data[0].customer.document
+        this.customerGivenName=userdata.data[0].customer.givenName
+        this.customerUuid=userdata.data[0].customer.uuid
+         
+        this.ufList = listUFs;
     },
     validations: {
         form: {
@@ -151,12 +211,7 @@ export default {
             customerDocument: {
                 required,
                 maxLength: maxLength(11)
-            },
-            customerGivenName: {
-                required,
-                maxLength: maxLength(11)
-            },
-
+            }, 
             customerEmailEmail: {
                 required,
                 maxLength: maxLength(100)
@@ -184,38 +239,11 @@ export default {
 
           console.log('aki...')
 
-            let payload = {
-                accountUuid: this.form.customerDocument,
-                birthDate: this.form.birthDate, 
-                customer: {
-                    document: this.form.customerDocument,
-                    givenName: this.form.customerGivenName,
-                    emails: [{
-                        email: this.form.email,
-                        type: this.form.emailType
-                    }],
-                    phones: [{
-                        ddd: this.form.phonesDdd,
-                        phoneNumber: this.form.phonesPhoneNumber,
-                        type: this.form.phonesType
-                    }],
-                    addresses: [{
-                        postcode: this.form.addressesPostcode,
-                        streetName: this.form.adressesStreetName,
-                        streetNumber: this.form.addressesStreetNumber,
-                        complement: this.form.addressesComplement,
-                        district: this.form.addressesDistrict,
-                        uf: this.form.addressesUf,
-                        city: this.form.addressesCity
-                    }]
-                }
-            }
+            let payload = {   }
 
 
             createAssocieate(payload).then(Response => {
-
                 console.log(Response)
-                this.$router.push({ path: "/schedule" })
 
             }).catch(erro => {
                 console.log('Erro ao chamar API de associate');
@@ -223,23 +251,35 @@ export default {
             })
 
  
-        }, 
-        searchCep(){
+        },
 
-           if(this.form.addressesPostcode.length==8){
-                getVIACEP(this.form.addressesPostcode).then(Response => {
-                     this.form.adressesStreetName=Response.logradouro,
-                     this.form.addressesDistrict=Response.bairro,
-                     this.form.addressesUf=Response.uf,
-                     this.form.addressesCity=Response.localidade
-    
+        getSelectedTypeOccupational() {
+            
+         let occ = this.typeOccupational == 1 ? 'MEDICO' : 'ODONTO'; 
+ 
+            getOccupationalList(occ).then(Response => {
+                
+                this.occupationalList= Response.data;
+
                 }).catch(erro => {
                     console.log('Erro ao chamar API de associate');
                     console.log(erro);
                 })
-           }
-           
+        },
+
+        callAPICitys(){
+
+            getlistMunicipios(this.ufSelect).then(Response => {
+                            console.log(Response)
+                            this.cityList= Response;
+
+                            }).catch(erro => {
+                                console.log('Erro ao chamar API de associate');
+                                console.log(erro);
+            })
         }
+           
+        
     },
 
     computed: {

@@ -90,7 +90,7 @@
   <script>
   
   import { required, minLength } from "vuelidate/lib/validators";
-  import {authCreate} from '../service/AuthService'
+  import {authSignup} from '../service/AuthService'
   
   export default {
     data() {
@@ -125,7 +125,6 @@
     },
   
     methods: {
-
     register() {
         this.$v.$touch();
        
@@ -140,17 +139,19 @@
                       confirmPassword: this.form.confirmPassword 
                       };
   
-        authCreate(payload).then(Response =>{
+        authSignup(payload).then(Response =>{
         console.log(Response)
-         this.$router.push({ path: "/login" })
+         localStorage.setItem('username', this.form.username)
+         this.$router.push({ path: "/loginConfirmCode" })
+        
         }).catch(erro =>{
             console.log(`Erro ao chamar API de token ${JSON.stringify(erro)}`);
         })
       },
   
       returnLogin(){
+        localStorage.setItem('username', this.form.username)
         this.$router.push({ path: "/login" })
-
       },
   
       getValidation(field) {
@@ -194,4 +195,3 @@
   }
   
   </style>
-  

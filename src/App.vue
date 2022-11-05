@@ -7,8 +7,8 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item to="/">Tarefas</b-nav-item>
-          <b-nav-item to="/form">Formulário</b-nav-item>
+           <b-nav-item to="/schedule">Marcar consulta</b-nav-item>
+          <b-nav-item to="/associeateRegister">Associeate</b-nav-item>
           <b-nav-item to="/login"  @click="logout" >Logout</b-nav-item>
 
         </b-navbar-nav>

@@ -4,7 +4,9 @@ import List from '../views/List.vue'
 import Form from '../views/Form.vue'
 import Login from '../views/Login.vue'
 import LoginRegister from '../views/LoginRegister.vue'
+import LoginConfirmCode from '../views/LoginConfirmCode.vue'
 import AssocieateRegister from '../views/AssocieateRegister.vue'
+import Schedule from '../views/Schedule.vue'
 
 
 Vue.use(VueRouter)
@@ -29,11 +31,20 @@ const routes = [
     path: '/loginRegister',
     name: 'loginRegister',
     component: LoginRegister
+  },
+  {
+    path: '/loginConfirmCode',
+    name: 'loginConfirmCode',
+    component: LoginConfirmCode
   },{
     path: '/associeateRegister',
     name: 'associeateRegister',
     component: AssocieateRegister
-  },
+  },{
+    path: '/schedule',
+    name: 'schedule',
+    component: Schedule
+  }
 ]
 
 const router = new VueRouter({

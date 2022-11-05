@@ -6,14 +6,15 @@
 
         <b-form>
           <b-form-group
-            label="E-mail"
+            label="Username [CPF]"
             label-for="email"
             >
               <b-form-input
                 id="email"
                 type="email"
-                placeholder="joaosilva@email.com"
+                placeholder="91593529066"
                 autocomplete="off"
+                :state="getValidationCPF('email')"
                 v-model.trim="$v.form.email.$model"
               ></b-form-input>
             </b-form-group>
@@ -66,7 +67,7 @@
 import { required, minLength } from "vuelidate/lib/validators";
 import {authToken} from '../service/AuthService'
 import {getAssocieateByAccountUuid} from '../service/CustomerService'
-import {getUsernameByToken} from '../helper/helper'
+import {getUsernameByToken, validateCPF} from '../helper/helper'
 
 export default {
   data() {
@@ -97,6 +98,13 @@ export default {
       if(this.$v.$error) {
         return;
       }
+     let isCpfValid = validateCPF(this.form.email)
+console.log(isCpfValid)
+
+    if(this.$v.$error) {
+        return;
+      }
+     
         let payload={
                     username: this.form.email,
                     password: this.form.password 
@@ -113,7 +121,8 @@ export default {
               this.$router.push({ path: "/associeateRegister" })
 
             }else{
-           this.$router.push({ path: "/" })
+             localStorage.setItem('userdata', JSON.stringify(Response))
+             this.$router.push({ path: "/schedule" })
 
             }
 
@@ -131,7 +140,7 @@ export default {
     },
 
     register() {
-      this.$router.push({ path: "/loginRegister" })
+      this.$router.push({ path: "/LoginRegister" })
 
     },
 
@@ -141,6 +150,16 @@ export default {
       }
 
       return !this.$v.form[field].$error;
+    },
+     getValidationCPF(field) {
+
+      if(this.$v.form.$dirty === false) {
+        return null;
+      }
+      if(!this.$v.form[field].$error){
+         return validateCPF(this.form.email)
+      }
+ 
     }
   }
 }
