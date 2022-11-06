@@ -21,3 +21,15 @@ export async function getOccupationalList(type) {
     const response = await Axios.get(`${base_url_customer}/providers/occupational?type=${type}`,);
     return response.data;
 }
+
+export async function getProviderList(query) {
+    
+    const response = await Axios.get(`${base_url_customer}/providers${query}`,);
+    return response.data;
+}
+
+export async function getPartnerList(query) {
+    
+    const response = await Axios.get(`${base_url_customer}/partners${query}`,);
+    return response.data;
+}

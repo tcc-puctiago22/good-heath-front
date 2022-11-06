@@ -1,136 +1,114 @@
 <template>
-  <div class="col">
-             <form class="row g-3">
-              <div class="col-12">
-                     <hr class="style1"> 
-                 </div>
-                <div class="col-md-6">
-                    <label for="inputCPF" class="form-label">Beneficiario CPF: {{customerDocument}} </label>
-                </div>
-                <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Nome completo:  {{customerGivenName}}</label>
-                </div>
-                <div class="col-12">
-                <br> 
-                    <hr class="style1"> 
-                     <br>
-                </div>
+    <div class="col">
+        <form class="row g-3">
+            <div class="col-12">
+                <hr class="style1">
+            </div>
+            <div class="col-md-6">
+                <label for="inputCPF" class="form-label">Beneficiario CPF: {{customerDocument}} </label>
+            </div>
+            <div class="col-md-6">
+                <label for="inputPassword4" class="form-label">Nome completo:  {{customerGivenName}}</label>
+            </div>
+            <div class="col-12">
+                <br>
+                <hr class="style1">
+                <br>
+            </div>
+    
 
-              <div class="col-md-3">
-                    <label for="inputPhoneDDD" class="form-label">Escolha tipo de Especialidade</label>
-                    <b-form-select
-                        id="typeOccupational"
-                        v-model="typeOccupational"
-                        :options="optionsList"
-                        @change="getSelectedTypeOccupational" 
-                    ></b-form-select>
-               </div>
-
-                 <div class="col-md-3">
-                    <label for="inputPhoneDDD" class="form-label">Escolha o Especialidade</label>
- 
-                    <b-form-select v-model="occupational">
-                        <option v-for="option in occupationalList" v-bind:key="option.uuid">
-                                {{ option.description }}
-                        </option>
-                    </b-form-select>
- 
-               </div>
-
-                <div class="col-md-3">
-                    <label for="inputuf" class="form-label">Escolha o Estado</label>
-                    <b-form-select   v-model="ufSelect"    @change="callAPICitys"  >
-                    
-                     <option
-                        v-for="(option, idx) in ufList"
-                        :key="idx"
-                        :value="option.sigla"
-                        :title="option.nome || null"
-                    >
+            <div class="col-md-3">
+                <label for="inputuf" class="form-label">Escolha o Estado</label>
+                <b-form-select v-model="ufSelect" @change="callAPICitys">
+    
+                    <option v-for="(option, idx) in ufList" :key="idx" :value="option.sigla" :title="option.nome || null">
                         {{ option.nome }}
                     </option>
-                   </b-form-select>
-               </div>
+                </b-form-select>
+            </div>
+    
+            <div class="col-md-3">
+                <label for="inputCity" class="form-label">Escolha o Municipio</label>
+                <b-form-select v-model="citySelect"  @change="callAPIPartnerList" >
+                    <option v-for="option in cityList" v-bind:key="option.nome">
+                        {{ option.nome }}
+                    </option>
+                </b-form-select>
+            </div>
 
-              <div class="col-md-3">
-                    <label for="inputCity" class="form-label">Escolha o Municipio</label>
-                    <b-form-select   v-model="citySelect"   >
-                       <option v-for="option in cityList" v-bind:key="option.nome">
-                                {{ option.nome }}
-                        </option>
-                   </b-form-select>
-               </div>
+              <div class="col-md-4">
+                <label for="inputbirthDate" class="form-label">Data da Consulta</label>
+                <b-form-datepicker id="inputbirthDate" v-model="scheduledDate" label-no-date-selected="Selecione uma data"></b-form-datepicker>
+            </div>
 
 
-                <div class="col-md-3">
-                    <label for="inputbirthDate" class="form-label">Data da Consulta</label>
-                    <b-form-datepicker  id="inputbirthDate"   v-model="form.scheduledDate" label-no-date-selected="Selecione uma data"
-                    ></b-form-datepicker>
-                </div>
-               <div class="col-md-2">
-                    <label for="inputPhoneDDD" class="form-label">DDD</label>
-                    <input type="number" class="form-control" id="inputPhoneDDD"  v-model="form.phonesDdd" >
-                </div>
-                <div class="col-md-3">
-                    <label for="phonesPhoneNumber" class="form-label">Número do Telefone</label>
-                    <input type="text" class="form-control" id="phonesPhoneNumber"  v-model="form.phonesPhoneNumber" > 
-                </div>
-                
-                <div class="col-md-7">
-                    <label for="inputEmail" class="form-label">E-mail</label>
-                    <input type="text" class="form-control" id="inputEmail"  v-model="form.email" > 
-                </div>
+            <div class="col-md-2">
+                <label for="inputuf" class="form-label">Escolha a Hora</label>
+                <b-form-select v-model="scheduledTime" >
+    
+                    <option v-for="(option, idx) in listTime" :key="idx" :value="option.init" :title="option.init || null">
+                        {{ option.init }} -  {{ option.finsh }}
+                    </option>
+                </b-form-select>
+            </div>
 
-                <div class="col-12"> 
-                    <hr class="style1"> 
-                </div>
+             <div class="col-md-12">
+                <br>
+                <hr class="style1">
+                <br>
+            </div>
 
-                <div class="col-md-3">
-                    <label for="imputaddressesPostcode" class="form-label">CEP</label>
-                    <input type="text" class="form-control" id="imputaddressesPostcode"  @keyup="searchCep()" v-model="form.addressesPostcode">
-                </div>
+            <div class="col-md-2">
+                <label for="inputPhoneDDD" class="form-label">Escolha tipo</label>
+                <b-form-select id="typeOccupational" v-model="typeOccupational" :options="optionsList" @change="getSelectedTypeOccupational"></b-form-select>
+            </div>
+    
+            <div class="col-md-3">
+                <label for="inputPhoneDDD" class="form-label">Especialidade</label>
+    
+                <b-form-select v-model="occupational"  @change="getProviderList">
+                    <option v-for="option in occupationalList" v-bind:key="option.uuid">
+                        {{ option.description }}
+                    </option>
                   
-                <div class="col-9">
-                    <label for="inputaddressesStreetName" class="form-label">Logradouro</label>
-                    <input type="text" class="form-control" id="inputddressesStreetName"  v-model="form.adressesStreetName">
-                </div>
-                <div class="col-2">
-                    <label for="inputaddressesStreetNumber" class="form-label">Número</label>
-                    <input type="text" class="form-control" id="inputaddressesStreetNumber"  v-model="form.addressesStreetNumber">
-                </div>
-                <div class="col-md-3">
-                    <label for="inputaddressesComplement" class="form-label">Complemento</label>
-                    <input type="text" class="form-control" id="inputaddressesComplement"   v-model="form.addressesComplement">
-                </div>
-
-                <div class="col-md-3">
-                    <label for="inputaddressesDistrict" class="form-label">Bairro</label>
-                    <input type="text" class="form-control" id="inputaddressesDistrict"   v-model="form.addressesDistrict">
-                </div>
+                </b-form-select>
+    
+            </div>
 
 
-                <div class="col-md-3">
-                    <label for="imputaddressesCity" class="form-label">Cidade</label>
-                    <input type="text" class="form-control" id="imputaddressesCity"   v-model="form.addressesCity">
-                </div>
-                <div class="col-md-2">
-                    <label for="inputaddressesUf" class="form-label">UF</label>
-                    <input type="text" class="form-control" id="inputaddressesUf"   v-model="form.addressesUf">
-                </div>
-                 
+            <div class="col-md-3">
+                <label for="inputPhoneDDD" class="form-label">Escolha o Especialidade</label>
+    
+                <b-form-select v-model="providerUuid">
+                      <option v-for="(option, idx) in providerList" :key="idx" :value="option.uuid" :title="option.uuid || null">
+                        {{ option.customer.givenName }}
+                    </option>
+                </b-form-select>
+            </div>
 
-                <div class="col-12"> 
-                    <hr class="style1"> 
-                </div>
- 
-                 <div class="col-12">
-                 <button type="button" class="btn btn-primary"  @click="saveAssociate"> Salvar</button>
-                </div>
-                 <div class="col-12"> 
-                    <hr class="style1"> 
-                    <br>
-                </div>
-            </form>
+             <div class="col-md-3">
+                <label for="inputPhoneDDD" class="form-label">Escolha a Unidade</label>
+    
+                <b-form-select v-model="partnerUuid">
+                     <option v-for="(option, idx) in partnerList" :key="idx" :value="option.uuid" :title="option.uuid || null">
+                        {{ option.customer.givenName }}
+                    </option>
+
+                </b-form-select>
+            </div>  
+    
+            <div class="col-12">
+                <hr class="style1">
+            </div>
+    
+            <div class="col-12">
+                <button type="button" class="btn btn-primary" @click="saveSchedule"> Salvar</button>
+            </div>
+            <div class="col-12">
+                <hr class="style1">
+                <br>
+            </div>
+        </form>
     </div>
 </template>
   
@@ -138,12 +116,12 @@
 import ToastMixin from "@/mixins/toastMixin.js";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 import TasksModel from "@/models/TasksModel";
-import Status from "@/valueObjects/status"
-import { createAssocieate, getOccupationalList } from '../service/CustomerService'
+import { getOccupationalList ,getProviderList, getPartnerList} from '../service/CustomerService'
+import { createSchedule } from '../service/ScheduleService'
 import { getlistMunicipios } from '../service/BrasilAPIService'
 
-
-import {listUFs} from '../helper/UFs'
+import { listHora } from '../helper/HoraHelper'
+import { listUFs } from '../helper/UFs'
 
 export default {
     name: "Form",
@@ -152,55 +130,38 @@ export default {
 
     data() {
         return {
-              optionsList: [
-                    { value: 1, text: "Médico" },
-                    { value: 2, text: "Dentista" }   
-                ],
-            occupationalList:[],
+            optionsList: [
+                { value: 1, text: "Médico" },
+                { value: 2, text: "Dentista" }
+            ],
+            scheduledDate:"",
+            occupationalList: [],
             customerDocument: "",
             customerGivenName: "",
-            typeOccupational:{},
-            occupational:{},
-            ufList:[],
-            ufSelect:'',
-            cityList:[],
+            typeOccupational: {},
+            occupational: {},
+            ufList: [],
+            ufSelect: '',
+            cityList: [],
             citySelect: '',
-            form: { 
-                subject: "",
-                description: "",
-                status: Status.OPEN,
-
-                accountUuid: "",
-                customerUuid:"",
-                birthDate: "",
-
-                email: "",
-                emailType: "PESSOAL",
-
-                phonesDdd: "",
-                phonesPhoneNumber: "",
-                phonesType: "PESSOAL",
-
-                adressesStreetName: "",
-                addressesStreetNumber: "",
-                addressesComplement: "",
-                addressesPostcode: "",
-                addressesDistrict: "",
-                addressesUf: "",
-                addressesCity: "",
-
-            },
-            methodSave: "new"
+            providerList:[], 
+            providerUuid:"",
+            partnerUuid:"",
+            methodSave: "new",
+            listTime:[],
+            scheduledTime:"",
+            partnerList:[]
         }
     },
     mounted() {
 
         var userdata = JSON.parse(localStorage.getItem('userdata'))
-        this.customerDocument=userdata.data[0].customer.document
-        this.customerGivenName=userdata.data[0].customer.givenName
-        this.customerUuid=userdata.data[0].customer.uuid
-         
+        this.customerDocument = userdata.data[0].customer.document
+        this.customerGivenName = userdata.data[0].customer.givenName
+        this.customerUuid = userdata.data[0].customer.uuid
+
         this.ufList = listUFs;
+        this.listTime=listHora
     },
     validations: {
         form: {
@@ -211,7 +172,7 @@ export default {
             customerDocument: {
                 required,
                 maxLength: maxLength(11)
-            }, 
+            },
             customerEmailEmail: {
                 required,
                 maxLength: maxLength(100)
@@ -235,14 +196,21 @@ export default {
 
     methods: {
 
-        saveAssociate() {
+        saveSchedule() {
 
-          console.log('aki...')
+            console.log('aki...')
 
-            let payload = {   }
+            let payload = { 
+                associeateUuid: this.customerUuid,
+                providerUuid: this.providerUuid,
+                partnerUuid: this.partnerUuid,
 
+                scheduledDate: this.scheduledDate,
+                scheduledTime: this.scheduledTime
+            }
 
-            createAssocieate(payload).then(Response => {
+            console.log(payload)
+            createSchedule(payload).then(Response => {
                 console.log(Response)
 
             }).catch(erro => {
@@ -250,36 +218,66 @@ export default {
                 console.log(erro);
             })
 
- 
+
         },
 
         getSelectedTypeOccupational() {
-            
-         let occ = this.typeOccupational == 1 ? 'MEDICO' : 'ODONTO'; 
- 
-            getOccupationalList(occ).then(Response => {
-                
-                this.occupationalList= Response.data;
 
-                }).catch(erro => {
-                    console.log('Erro ao chamar API de associate');
-                    console.log(erro);
-                })
+            let occ = this.typeOccupational == 1 ? 'MEDICO' : 'ODONTO';
+
+            getOccupationalList(occ).then(Response => {
+
+                this.occupationalList = Response.data;
+
+            }).catch(erro => {
+                console.log('Erro ao chamar API de associate');
+                console.log(erro);
+            })
         },
 
-        callAPICitys(){
+        getProviderList(){
+
+            let query = `?occupationDescription=${this.occupational}`
+
+            getProviderList(query).then(Response => {
+
+             console.log(Response.data) 
+             this.providerList=Response.data
+
+            }).catch(erro => {
+                console.log('Erro ao chamar API ');
+                console.log(erro);
+            })
+
+            },
+
+        callAPICitys() {
 
             getlistMunicipios(this.ufSelect).then(Response => {
-                            console.log(Response)
-                            this.cityList= Response;
+                console.log(Response)
+                this.cityList = Response;
 
-                            }).catch(erro => {
-                                console.log('Erro ao chamar API de associate');
-                                console.log(erro);
+            }).catch(erro => {
+                console.log('Erro ao chamar API de associate');
+                console.log(erro);
+            })
+        },
+
+        callAPIPartnerList(){
+
+            let query = `?city=${this.citySelect}`
+
+              getPartnerList(query).then(Response => {
+                console.log(Response.data)
+                this.partnerList = Response.data;
+
+            }).catch(erro => {
+                console.log('Erro ao chamar API de associate');
+                console.log(erro);
             })
         }
-           
-        
+
+
     },
 
     computed: {
