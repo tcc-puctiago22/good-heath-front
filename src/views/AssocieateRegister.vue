@@ -104,7 +104,7 @@ export default {
                 description: "",
                 status: Status.OPEN,
 
-                accountUuid: "",
+                accountUsername: "",
                 customerDocument: "",
                 customerGivenName: "",
                 birthDate: "",
@@ -185,7 +185,8 @@ export default {
           console.log('aki...')
 
             let payload = {
-                accountUuid: this.form.customerDocument,
+                accountUsername: this.form.customerDocument,
+                type: 'OWNER',
                 birthDate: this.form.birthDate, 
                 customer: {
                     document: this.form.customerDocument,
@@ -228,10 +229,10 @@ export default {
 
            if(this.form.addressesPostcode.length==8){
                 getVIACEP(this.form.addressesPostcode).then(Response => {
-                     this.form.adressesStreetName=Response.logradouro,
-                     this.form.addressesDistrict=Response.bairro,
-                     this.form.addressesUf=Response.uf,
-                     this.form.addressesCity=Response.localidade
+                     this.form.adressesStreetName=Response.street,
+                     this.form.addressesDistrict=Response.neighborhood,
+                     this.form.addressesUf=Response.state,
+                     this.form.addressesCity=Response.city
     
                 }).catch(erro => {
                     console.log('Erro ao chamar API de associate');

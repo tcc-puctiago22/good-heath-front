@@ -198,8 +198,6 @@ export default {
 
         saveSchedule() {
 
-            console.log('aki...')
-
             let payload = { 
                 associeateUuid: this.customerUuid,
                 providerUuid: this.providerUuid,
@@ -208,8 +206,7 @@ export default {
                 scheduledDate: this.scheduledDate,
                 scheduledTime: this.scheduledTime
             }
-
-            console.log(payload)
+ 
             createSchedule(payload).then(Response => {
                 console.log(Response)
 
@@ -240,8 +237,7 @@ export default {
             let query = `?occupationDescription=${this.occupational}`
 
             getProviderList(query).then(Response => {
-
-             console.log(Response.data) 
+ 
              this.providerList=Response.data
 
             }).catch(erro => {
@@ -254,8 +250,7 @@ export default {
         callAPICitys() {
 
             getlistMunicipios(this.ufSelect).then(Response => {
-                console.log(Response)
-                this.cityList = Response;
+                 this.cityList = Response;
 
             }).catch(erro => {
                 console.log('Erro ao chamar API de associate');
