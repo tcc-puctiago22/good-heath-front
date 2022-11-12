@@ -8,11 +8,11 @@ export async function createAssocieate(data) {
     return response.data;
 }
 
-export async function getAssocieateByAccountUuid(accountUuid) {
+export async function getAssocieateByAccount(accountUuid) {
 
     console.log(base_url_customer)
     
-    const response = await Axios.get(`${base_url_customer}/associetes?accountUuid=${accountUuid}`);
+    const response = await Axios.get(`${base_url_customer}/associetes?accountUsername=${accountUuid}`);
     return response.data;
 }
 

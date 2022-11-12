@@ -38,6 +38,7 @@ export default {
   methods: {
     logout() {
       localStorage.setItem('token', null)
+      localStorage.setItem('userdata', null)
       return this.$route.name !== "login";
     }
   }

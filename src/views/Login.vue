@@ -66,7 +66,7 @@
 
 import { required, minLength } from "vuelidate/lib/validators";
 import {authToken} from '../service/AuthService'
-import {getAssocieateByAccountUuid} from '../service/CustomerService'
+import {getAssocieateByAccount} from '../service/CustomerService'
 import {getUsernameByToken, validateCPF} from '../helper/helper'
 
 export default {
@@ -115,7 +115,7 @@ console.log(isCpfValid)
        localStorage.setItem('token', Response.token)
        var descode = getUsernameByToken(Response.token)
           
-          getAssocieateByAccountUuid(descode).then(Response =>{
+          getAssocieateByAccount(descode).then(Response =>{
 
             if(Response.data.length==0){
               this.$router.push({ path: "/associeateRegister" })
